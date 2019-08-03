@@ -19,13 +19,18 @@ io.on('connection',(socket)=>{
     //     text: 'Hey Whatsapp',
     //     createdAt: 123
     // });
-    socket.emit('newMessage',{
-        from:'fakhry',
-        text:'Mantej ya paolo',
-        createdAt: 123
-    });
-    socket.on('createMessage',(newMessage)=>{
-        console.log('createdMessage',newMessage);
+    // socket.emit('newMessage',{          //emits event to a single connection
+    //     from:'fakhry',
+    //     text:'Mantej ya paolo',
+    //     createdAt: 123
+    // });
+    socket.on('createMessage',(message)=>{ 
+        console.log('createdMessage',message);
+        io.emit('newMessage',{          //emits event to every connection
+            from: message.from,
+            text: message.text,
+            createdAt: new Date().getTime()
+        });           
     });
     socket.on('disconnect',(socket)=>{
         console.log('User was disconnected');
