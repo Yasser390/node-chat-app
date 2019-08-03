@@ -14,6 +14,19 @@ app.use(express.static(publicPath)); // configure middleware
 io.on('connection',(socket)=>{
     console.log('New user connceted');
 
+    // socket.emit('newEmail',{
+    //     from: 'ramy@test.com',
+    //     text: 'Hey Whatsapp',
+    //     createdAt: 123
+    // });
+    socket.emit('newMessage',{
+        from:'fakhry',
+        text:'Mantej ya paolo',
+        createdAt: 123
+    });
+    socket.on('createMessage',(newMessage)=>{
+        console.log('createdMessage',newMessage);
+    });
     socket.on('disconnect',(socket)=>{
         console.log('User was disconnected');
     });
