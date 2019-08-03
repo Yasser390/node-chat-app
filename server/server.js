@@ -3,6 +3,7 @@ const express = require('express');
 const http = require('http');
 const socketIO = require('socket.io');
 
+const {generateMessage} = require('./utils/message');
 const publicPath = path.join(__dirname,'../public'); 
 const port = process.env.PORT || 3000;
 let app = express();
@@ -20,17 +21,12 @@ io.on('connection',(socket)=>{
     //     createdAt: 123
     // });
     
-    socket.emit('newMessage',{          //emits event to a single connection
-        from:'Admin',
-        text:'Welcome User',
-        createdAt: new Date().getTime()
-    });
+    socket.emit('newMessage',generateMessage('Admin','Welcom User'));   
+              //emits event to a single connection
 
-    socket.broadcast.emit('newMessage',{          //emits event to a single connection
-        from:'Admin',
-        text:'A new user joined ya boooo7a',
-        createdAt: new Date().getTime()
-    });
+    socket.broadcast.emit('newMessage',generateMessage('Admin','A new user joined ya boooo7a'));
+            
+        
     
     socket.on('createMessage',(message)=>{ 
         console.log('createdMessage',message);
@@ -39,11 +35,9 @@ io.on('connection',(socket)=>{
         //     text: message.text,
         //     createdAt: new Date().getTime()
         // });
-        socket.broadcast.emit('newMessage',{           //send it to every connection except the sender
-            from: message.from,
-            text: message.text,
-            createdAt: new Date().getTime()
-        });
+        socket.broadcast.emit('newMessage',generateMessage(message.from,message.text));
+                       //send it to every connection except the sender
+            
     });
     socket.on('disconnect',(socket)=>{
         console.log('User was disconnected');
