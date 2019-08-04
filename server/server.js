@@ -14,28 +14,18 @@ app.use(express.static(publicPath)); // configure middleware
 
 io.on('connection',(socket)=>{
     console.log('New user connceted');
-
-    // socket.emit('newEmail',{
-    //     from: 'ramy@test.com',
-    //     text: 'Hey Whatsapp',
-    //     createdAt: 123
-    // });
-    
     socket.emit('newMessage',generateMessage('Admin','Welcom User'));   
               //emits event to a single connection
 
     socket.broadcast.emit('newMessage',generateMessage('Admin','A new user joined ya boooo7a'));
-            
-        
-    
-    socket.on('createMessage',(message)=>{ 
+  
+    socket.on('createMessage',(message, callback)=>{ 
         console.log('createdMessage',message);
-        // io.emit('newMessage',{          //emits event to every connection
-        //     from: message.from,
-        //     text: message.text,
-        //     createdAt: new Date().getTime()
-        // });
-        socket.broadcast.emit('newMessage',generateMessage(message.from,message.text));
+        io.emit('newMessage',generateMessage(message.from,message.text));  
+        callback('This is from the server');
+                    //emits event to every connection
+        
+        //socket.broadcast.emit('newMessage',generateMessage(message.from,message.text));
                        //send it to every connection except the sender
             
     });
